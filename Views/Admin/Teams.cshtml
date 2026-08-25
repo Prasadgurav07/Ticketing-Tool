@@ -1,0 +1,62 @@
+@model IEnumerable<Team>
+
+@{
+    ViewData["Title"] = "Teams";
+    var departments = (IEnumerable<Microsoft.AspNetCore.Mvc.Rendering.SelectListItem>)ViewBag.Departments;
+}
+
+<div class="page-title">
+    <div>
+        <h1 class="h3 mb-1">Teams</h1>
+        <p class="text-muted mb-0">Maintain support teams under departments for ticket routing.</p>
+    </div>
+</div>
+
+<div class="content-panel mb-3">
+    <h2 class="h5">Add Team</h2>
+    <form asp-action="SaveTeam" method="post" class="row g-2 align-items-end">
+        <input type="hidden" name="TeamId" value="0" />
+        <div class="col-md-3">
+            <label class="form-label" for="DepartmentId">Department</label>
+            <select id="DepartmentId" name="DepartmentId" asp-items="departments" class="form-select">
+                <option value="">Select department</option>
+            </select>
+        </div>
+        <div class="col-md-3">
+            <label class="form-label" for="TeamName">Team</label>
+            <input id="TeamName" name="TeamName" class="form-control" />
+        </div>
+        <div class="col-md-4">
+            <label class="form-label" for="TeamDescription">Description</label>
+            <input id="TeamDescription" name="Description" class="form-control" />
+        </div>
+        <div class="col-md-1 form-check">
+            <input type="hidden" name="IsActive" value="false" />
+            <input id="TeamActive" name="IsActive" value="true" class="form-check-input" type="checkbox" checked />
+            <label class="form-check-label" for="TeamActive">Active</label>
+        </div>
+        <div class="col-md-1">
+            <button class="btn btn-primary w-100" type="submit">Save</button>
+        </div>
+    </form>
+</div>
+
+<div class="content-panel">
+    <div class="vstack gap-2">
+        @foreach (var team in Model)
+        {
+            <form asp-action="SaveTeam" method="post" class="admin-row admin-row-team">
+                <input type="hidden" name="TeamId" value="@team.TeamId" />
+                @Html.DropDownList("DepartmentId", new Microsoft.AspNetCore.Mvc.Rendering.SelectList(departments, "Value", "Text", team.DepartmentId.ToString()), "Select department", new { @class = "form-select" })
+                <input name="TeamName" class="form-control" value="@team.TeamName" />
+                <input name="Description" class="form-control" value="@team.Description" />
+                <label class="form-check">
+                    <input type="hidden" name="IsActive" value="false" />
+                    <input name="IsActive" value="true" class="form-check-input" type="checkbox" checked="@team.IsActive" />
+                    <span class="form-check-label">Active</span>
+                </label>
+                <button class="btn btn-outline-primary" type="submit">Save</button>
+            </form>
+        }
+    </div>
+</div>

@@ -1,0 +1,240 @@
+@model TicketDetailsViewModel
+
+@{
+    var ticket = Model.Ticket;
+    var currentUserId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+    var isRequester = currentUserId == ticket.CreatedById;
+    var isSupport = User.IsInRole(RoleNames.SupportAgent) || User.IsInRole(RoleNames.TeamLead) || User.IsInRole(RoleNames.Admin);
+    ViewData["Title"] = ticket.TicketNumber;
+}
+
+@functions {
+    private static string Slug(string value) => value.ToLowerInvariant().Replace(" ", "-");
+
+    private static string DisplayUser(ApplicationUser? user)
+    {
+        if (user is null)
+        {
+            return "Unassigned";
+        }
+
+        return !string.IsNullOrWhiteSpace(user.FullName) ? user.FullName : user.Email ?? user.UserName ?? "User";
+    }
+}
+
+<div class="page-title">
+    <div>
+        <h1 class="h3 mb-1">@ticket.TicketNumber</h1>
+        <p class="text-muted mb-0">@ticket.Subject</p>
+    </div>
+    <a class="btn btn-outline-secondary" asp-action="Index">Back to tickets</a>
+</div>
+
+<div class="row g-3">
+    <div class="col-xl-8">
+        <div class="content-panel mb-3">
+            <div class="d-flex flex-wrap align-items-center gap-2 mb-3">
+                <span class="status-badge status-@Slug(ticket.Status?.StatusName ?? string.Empty)">@ticket.Status?.StatusName</span>
+                <span class="priority-badge priority-@Slug(ticket.Priority?.PriorityName ?? string.Empty)">@ticket.Priority?.PriorityName</span>
+            </div>
+            <dl class="row mb-0">
+                <dt class="col-sm-3">Description</dt>
+                <dd class="col-sm-9 text-preline">@ticket.Description</dd>
+
+                <dt class="col-sm-3">Category</dt>
+                <dd class="col-sm-9">@ticket.Category?.CategoryName</dd>
+
+                <dt class="col-sm-3">Department</dt>
+                <dd class="col-sm-9">@ticket.Department?.DepartmentName</dd>
+
+                <dt class="col-sm-3">Team</dt>
+                <dd class="col-sm-9">@(ticket.Team?.TeamName ?? "Route by department")</dd>
+
+                <dt class="col-sm-3">Created By</dt>
+                <dd class="col-sm-9">@DisplayUser(ticket.CreatedBy)</dd>
+
+                <dt class="col-sm-3">Assigned To</dt>
+                <dd class="col-sm-9">@DisplayUser(ticket.AssignedTo)</dd>
+
+                <dt class="col-sm-3">Created</dt>
+                <dd class="col-sm-9">@ticket.CreatedAt.ToLocalTime().ToString("dd MMM yyyy HH:mm")</dd>
+
+                <dt class="col-sm-3">Updated</dt>
+                <dd class="col-sm-9">@ticket.UpdatedAt.ToLocalTime().ToString("dd MMM yyyy HH:mm")</dd>
+
+                @if (!string.IsNullOrWhiteSpace(ticket.Resolution))
+                {
+                    <dt class="col-sm-3">Resolution</dt>
+                    <dd class="col-sm-9 text-preline">@ticket.Resolution</dd>
+                }
+            </dl>
+        </div>
+
+        @if (isRequester && ticket.Status?.StatusName == TicketStatusNames.Resolved)
+        {
+            <div class="content-panel mb-3 border-success">
+                <h2 class="h5">Confirm Resolution</h2>
+                <p class="text-muted">Confirm whether the issue is fixed. If it is not fixed, the ticket will reopen to In Progress.</p>
+                <div class="d-flex flex-wrap gap-2">
+                    <form asp-action="ConfirmResolution" method="post">
+                        <input type="hidden" name="TicketId" value="@ticket.TicketId" />
+                        <input type="hidden" name="IsFixed" value="true" />
+                        <button class="btn btn-success" type="submit">Issue Fixed</button>
+                    </form>
+                    <form asp-action="ConfirmResolution" method="post" class="d-flex flex-wrap gap-2 flex-grow-1">
+                        <input type="hidden" name="TicketId" value="@ticket.TicketId" />
+                        <input type="hidden" name="IsFixed" value="false" />
+                        <input class="form-control" name="Comment" placeholder="What is still not working?" />
+                        <button class="btn btn-outline-danger" type="submit">Reopen</button>
+                    </form>
+                </div>
+            </div>
+        }
+
+        <div class="content-panel mb-3">
+            <h2 class="h5 mb-3">Comments</h2>
+            @foreach (var comment in ticket.Comments.OrderBy(comment => comment.CreatedAt))
+            {
+                <div class="comment-item">
+                    <div class="d-flex justify-content-between gap-2">
+                        <strong>@DisplayUser(comment.User)</strong>
+                        <span class="small text-muted">@comment.CreatedAt.ToLocalTime().ToString("dd MMM yyyy HH:mm")</span>
+                    </div>
+                    <div class="text-preline">@comment.CommentText</div>
+                </div>
+            }
+            @if (!ticket.Comments.Any())
+            {
+                <p class="text-muted">No comments yet.</p>
+            }
+            <form asp-action="AddComment" method="post" class="mt-3">
+                <input type="hidden" name="TicketId" value="@ticket.TicketId" />
+                <label class="form-label" for="CommentText">Add comment</label>
+                <textarea id="CommentText" name="CommentText" class="form-control" rows="3"></textarea>
+                <button class="btn btn-primary mt-2" type="submit">Post Comment</button>
+            </form>
+        </div>
+
+        <div class="content-panel">
+            <h2 class="h5 mb-3">Status History</h2>
+            <div class="table-responsive">
+                <table class="table align-middle">
+                    <thead>
+                        <tr>
+                            <th>Old Status</th>
+                            <th>New Status</th>
+                            <th>User</th>
+                            <th>Date</th>
+                            <th>Comment</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    @foreach (var history in ticket.StatusHistory.OrderBy(history => history.ChangedAt))
+                    {
+                        <tr>
+                            <td>@(history.OldStatus?.StatusName ?? "-")</td>
+                            <td>@history.NewStatus?.StatusName</td>
+                            <td>@DisplayUser(history.ChangedBy)</td>
+                            <td>@history.ChangedAt.ToLocalTime().ToString("dd MMM yyyy HH:mm")</td>
+                            <td>@history.Comment</td>
+                        </tr>
+                    }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-xl-4">
+        @if (isSupport)
+        {
+            <div class="content-panel mb-3">
+                <h2 class="h5">Assignment</h2>
+                <form asp-action="Assign" method="post" class="vstack gap-2">
+                    <input type="hidden" name="TicketId" value="@ticket.TicketId" />
+                    <select class="form-select" name="AssignedToId">
+                        <option value="">Select support user</option>
+                        @foreach (var agent in Model.AssignableUsers)
+                        {
+                            <option value="@agent.Id" selected="@(agent.Id == ticket.AssignedToId)">@DisplayUser(agent)</option>
+                        }
+                    </select>
+                    <textarea class="form-control" name="AssignmentReason" rows="2" placeholder="Assignment reason"></textarea>
+                    <button class="btn btn-primary" type="submit">Assign Ticket</button>
+                </form>
+            </div>
+        }
+
+        @if (Model.AllowedStatuses.Any())
+        {
+            <div class="content-panel mb-3">
+                <h2 class="h5">Change Status</h2>
+                <form asp-action="ChangeStatus" method="post" class="vstack gap-2">
+                    <input type="hidden" name="TicketId" value="@ticket.TicketId" />
+                    <select class="form-select" name="StatusId">
+                        @foreach (var status in Model.AllowedStatuses)
+                        {
+                            <option value="@status.StatusId">@status.StatusName</option>
+                        }
+                    </select>
+                    <textarea class="form-control" name="Comment" rows="2" placeholder="Status note"></textarea>
+                    <textarea class="form-control" name="Resolution" rows="3" placeholder="Resolution description when resolving"></textarea>
+                    <button class="btn btn-primary" type="submit">Update Status</button>
+                </form>
+            </div>
+        }
+
+        <div class="content-panel mb-3">
+            <h2 class="h5 mb-3">Attachments</h2>
+            <div class="list-group mb-3">
+                @foreach (var attachment in ticket.Attachments.OrderBy(attachment => attachment.UploadedAt))
+                {
+                    <a class="list-group-item list-group-item-action" asp-action="DownloadAttachment" asp-route-id="@attachment.AttachmentId">
+                        <div class="fw-semibold">@attachment.OriginalFileName</div>
+                        <div class="small text-muted">@Math.Round(attachment.FileSize / 1024d, 1) KB by @DisplayUser(attachment.UploadedBy)</div>
+                    </a>
+                }
+                @if (!ticket.Attachments.Any())
+                {
+                    <div class="text-muted">No attachments uploaded.</div>
+                }
+            </div>
+            <form asp-action="UploadAttachment" method="post" enctype="multipart/form-data" class="vstack gap-2">
+                <input type="hidden" name="TicketId" value="@ticket.TicketId" />
+                <input class="form-control" type="file" name="File" />
+                <button class="btn btn-outline-primary" type="submit">Upload Attachment</button>
+            </form>
+        </div>
+
+        <div class="content-panel">
+            <h2 class="h5 mb-3">Assignment History</h2>
+            <div class="table-responsive">
+                <table class="table table-sm align-middle">
+                    <thead>
+                        <tr>
+                            <th>Assigned To</th>
+                            <th>Assigned By</th>
+                            <th>Date</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    @foreach (var assignment in ticket.Assignments.OrderBy(assignment => assignment.AssignedAt))
+                    {
+                        <tr>
+                            <td>@DisplayUser(assignment.AssignedTo)</td>
+                            <td>@DisplayUser(assignment.AssignedBy)</td>
+                            <td>@assignment.AssignedAt.ToLocalTime().ToString("dd MMM yyyy HH:mm")</td>
+                        </tr>
+                    }
+                    @if (!ticket.Assignments.Any())
+                    {
+                        <tr>
+                            <td colspan="3" class="text-muted">No assignment history.</td>
+                        </tr>
+                    }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>

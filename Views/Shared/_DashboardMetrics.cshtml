@@ -1,0 +1,52 @@
+@model DashboardViewModel
+
+<div class="row g-3 mb-4">
+    <div class="col-sm-6 col-xl-3">
+        <div class="metric-card">
+            <div class="text-muted small">Total Tickets</div>
+            <div class="metric-value">@Model.TotalTickets</div>
+        </div>
+    </div>
+    <div class="col-sm-6 col-xl-3">
+        <div class="metric-card">
+            <div class="text-muted small">Open</div>
+            <div class="metric-value">@Model.OpenTickets</div>
+        </div>
+    </div>
+    <div class="col-sm-6 col-xl-3">
+        <div class="metric-card">
+            <div class="text-muted small">In Progress</div>
+            <div class="metric-value">@Model.InProgressTickets</div>
+        </div>
+    </div>
+    <div class="col-sm-6 col-xl-3">
+        <div class="metric-card">
+            <div class="text-muted small">Pending User</div>
+            <div class="metric-value">@Model.PendingUserTickets</div>
+        </div>
+    </div>
+    <div class="col-sm-6 col-xl-3">
+        <div class="metric-card">
+            <div class="text-muted small">Assigned</div>
+            <div class="metric-value">@Model.AssignedTickets</div>
+        </div>
+    </div>
+    <div class="col-sm-6 col-xl-3">
+        <div class="metric-card">
+            <div class="text-muted small">Resolved</div>
+            <div class="metric-value">@Model.ResolvedTickets</div>
+        </div>
+    </div>
+    <div class="col-sm-6 col-xl-3">
+        <div class="metric-card">
+            <div class="text-muted small">Closed</div>
+            <div class="metric-value">@Model.ClosedTickets</div>
+        </div>
+    </div>
+    <div class="col-sm-6 col-xl-3">
+        <div class="metric-card">
+            <div class="text-muted small">Critical / High</div>
+            <div class="metric-value">@Model.CriticalHighTickets</div>
+        </div>
+    </div>
+</div>

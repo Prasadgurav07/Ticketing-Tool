@@ -1,0 +1,54 @@
+@model IEnumerable<Priority>
+
+@{
+    ViewData["Title"] = "Priorities";
+}
+
+<div class="page-title">
+    <div>
+        <h1 class="h3 mb-1">Priorities</h1>
+        <p class="text-muted mb-0">Maintain response and resolution targets for ticket priority levels.</p>
+    </div>
+</div>
+
+<div class="content-panel mb-3">
+    <h2 class="h5">Add Priority</h2>
+    <form asp-action="SavePriority" method="post" class="row g-2 align-items-end">
+        <input type="hidden" name="PriorityId" value="0" />
+        <div class="col-md-3">
+            <label class="form-label" for="PriorityName">Name</label>
+            <input id="PriorityName" name="PriorityName" class="form-control" />
+        </div>
+        <div class="col-md-2">
+            <label class="form-label" for="PriorityLevel">Level</label>
+            <input id="PriorityLevel" name="PriorityLevel" class="form-control" type="number" min="1" value="4" />
+        </div>
+        <div class="col-md-3">
+            <label class="form-label" for="ResponseTime">Response Time</label>
+            <input id="ResponseTime" name="ResponseTime" class="form-control" />
+        </div>
+        <div class="col-md-3">
+            <label class="form-label" for="ResolutionTime">Resolution Time</label>
+            <input id="ResolutionTime" name="ResolutionTime" class="form-control" />
+        </div>
+        <div class="col-md-1">
+            <button class="btn btn-primary w-100" type="submit">Save</button>
+        </div>
+    </form>
+</div>
+
+<div class="content-panel">
+    <div class="vstack gap-2">
+        @foreach (var priority in Model)
+        {
+            <form asp-action="SavePriority" method="post" class="admin-row admin-row-priority">
+                <input type="hidden" name="PriorityId" value="@priority.PriorityId" />
+                <input name="PriorityName" class="form-control" value="@priority.PriorityName" />
+                <input name="PriorityLevel" class="form-control" type="number" min="1" value="@priority.PriorityLevel" />
+                <input name="ResponseTime" class="form-control" value="@priority.ResponseTime" />
+                <input name="ResolutionTime" class="form-control" value="@priority.ResolutionTime" />
+                <button class="btn btn-outline-primary" type="submit">Save</button>
+            </form>
+        }
+    </div>
+</div>

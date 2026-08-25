@@ -1,0 +1,52 @@
+@model IEnumerable<AdminUserViewModel>
+
+@{
+    ViewData["Title"] = "Users";
+}
+
+<div class="page-title">
+    <div>
+        <h1 class="h3 mb-1">Users</h1>
+        <p class="text-muted mb-0">Manage user profile metadata, departments, activity, and authorization role.</p>
+    </div>
+</div>
+
+<div class="content-panel">
+    <div class="vstack gap-3">
+        @foreach (var user in Model)
+        {
+            var currentRole = user.Roles.Split(", ", StringSplitOptions.RemoveEmptyEntries).FirstOrDefault();
+            <form asp-action="SaveUser" method="post" class="admin-user-row">
+                <input type="hidden" name="UserId" value="@user.UserId" />
+                <div>
+                    <label class="form-label">Email</label>
+                    <input class="form-control" value="@user.Email" disabled />
+                </div>
+                <div>
+                    <label class="form-label">Full Name</label>
+                    <input name="FullName" class="form-control" value="@user.FullName" />
+                </div>
+                <div>
+                    <label class="form-label">Employee Code</label>
+                    <input name="EmployeeCode" class="form-control" value="@user.EmployeeCode" />
+                </div>
+                <div>
+                    <label class="form-label">Department</label>
+                    @Html.DropDownList("DepartmentId", new Microsoft.AspNetCore.Mvc.Rendering.SelectList(user.Departments, "Value", "Text", user.DepartmentId?.ToString()), "No department", new { @class = "form-select" })
+                </div>
+                <div>
+                    <label class="form-label">Role</label>
+                    @Html.DropDownList("roleName", new Microsoft.AspNetCore.Mvc.Rendering.SelectList(user.AvailableRoles, "Value", "Text", currentRole), "No role", new { @class = "form-select" })
+                </div>
+                <label class="form-check mt-4">
+                    <input type="hidden" name="IsActive" value="false" />
+                    <input name="IsActive" value="true" class="form-check-input" type="checkbox" checked="@user.IsActive" />
+                    <span class="form-check-label">Active</span>
+                </label>
+                <div class="mt-4">
+                    <button class="btn btn-outline-primary w-100" type="submit">Save</button>
+                </div>
+            </form>
+        }
+    </div>
+</div>

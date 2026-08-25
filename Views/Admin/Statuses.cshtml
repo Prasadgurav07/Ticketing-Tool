@@ -1,0 +1,54 @@
+@model IEnumerable<TicketStatus>
+
+@{
+    ViewData["Title"] = "Statuses";
+}
+
+<div class="page-title">
+    <div>
+        <h1 class="h3 mb-1">Statuses</h1>
+        <p class="text-muted mb-0">Maintain ticket lifecycle statuses. Transition rules live in the status service.</p>
+    </div>
+</div>
+
+<div class="content-panel mb-3">
+    <h2 class="h5">Add Status</h2>
+    <form asp-action="SaveStatus" method="post" class="row g-2 align-items-end">
+        <input type="hidden" name="StatusId" value="0" />
+        <div class="col-md-4">
+            <label class="form-label" for="StatusName">Name</label>
+            <input id="StatusName" name="StatusName" class="form-control" />
+        </div>
+        <div class="col-md-5">
+            <label class="form-label" for="StatusDescription">Description</label>
+            <input id="StatusDescription" name="Description" class="form-control" />
+        </div>
+        <div class="col-md-1 form-check">
+            <input type="hidden" name="IsFinal" value="false" />
+            <input id="IsFinal" name="IsFinal" value="true" class="form-check-input" type="checkbox" />
+            <label class="form-check-label" for="IsFinal">Final</label>
+        </div>
+        <div class="col-md-2">
+            <button class="btn btn-primary w-100" type="submit">Save</button>
+        </div>
+    </form>
+</div>
+
+<div class="content-panel">
+    <div class="vstack gap-2">
+        @foreach (var status in Model)
+        {
+            <form asp-action="SaveStatus" method="post" class="admin-row">
+                <input type="hidden" name="StatusId" value="@status.StatusId" />
+                <input name="StatusName" class="form-control" value="@status.StatusName" />
+                <input name="Description" class="form-control" value="@status.Description" />
+                <label class="form-check">
+                    <input type="hidden" name="IsFinal" value="false" />
+                    <input name="IsFinal" value="true" class="form-check-input" type="checkbox" checked="@status.IsFinal" />
+                    <span class="form-check-label">Final</span>
+                </label>
+                <button class="btn btn-outline-primary" type="submit">Save</button>
+            </form>
+        }
+    </div>
+</div>

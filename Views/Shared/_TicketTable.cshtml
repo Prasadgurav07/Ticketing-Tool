@@ -1,0 +1,46 @@
+@model IEnumerable<TicketListItemViewModel>
+
+@functions {
+    private static string Slug(string value) => value.ToLowerInvariant().Replace(" ", "-");
+}
+
+<div class="table-responsive">
+    <table class="table table-hover align-middle mb-0">
+        <thead>
+            <tr>
+                <th>Ticket</th>
+                <th>Subject</th>
+                <th>Category</th>
+                <th>Priority</th>
+                <th>Status</th>
+                <th>Created</th>
+                <th>Assigned To</th>
+            </tr>
+        </thead>
+        <tbody>
+        @foreach (var ticket in Model)
+        {
+            <tr>
+                <td>
+                    <a class="fw-semibold" asp-controller="Tickets" asp-action="Details" asp-route-id="@ticket.TicketId">@ticket.TicketNumber</a>
+                </td>
+                <td>
+                    <div class="fw-semibold">@ticket.Subject</div>
+                    <div class="small text-muted">@ticket.Department / @ticket.Team</div>
+                </td>
+                <td>@ticket.Category</td>
+                <td><span class="priority-badge priority-@Slug(ticket.Priority)">@ticket.Priority</span></td>
+                <td><span class="status-badge status-@Slug(ticket.Status)">@ticket.Status</span></td>
+                <td>@ticket.CreatedAt.ToLocalTime().ToString("dd MMM yyyy HH:mm")</td>
+                <td>@ticket.AssignedTo</td>
+            </tr>
+        }
+        @if (!Model.Any())
+        {
+            <tr>
+                <td colspan="7" class="text-center text-muted py-4">No tickets found.</td>
+            </tr>
+        }
+        </tbody>
+    </table>
+</div>

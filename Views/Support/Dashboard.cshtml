@@ -1,0 +1,23 @@
+@model DashboardViewModel
+
+@{
+    ViewData["Title"] = "Support Dashboard";
+}
+
+<div class="page-title">
+    <div>
+        <h1 class="h3 mb-1">Support Dashboard</h1>
+        <p class="text-muted mb-0">Open workload, assigned tickets, and urgent items.</p>
+    </div>
+    <a class="btn btn-outline-primary" asp-controller="Tickets" asp-action="Index">Filter Tickets</a>
+</div>
+
+<partial name="_DashboardMetrics" model="Model" />
+
+<div class="content-panel">
+    <div class="d-flex align-items-center justify-content-between mb-3">
+        <h2 class="h5 mb-0">Latest Tickets</h2>
+        <a asp-controller="Tickets" asp-action="Index">Open queue</a>
+    </div>
+    <partial name="_TicketTable" model="Model.RecentTickets" />
+</div>

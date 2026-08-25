@@ -1,0 +1,63 @@
+@model AdminIndexViewModel
+
+@{
+    ViewData["Title"] = "Admin";
+}
+
+<div class="page-title">
+    <div>
+        <h1 class="h3 mb-1">Admin Overview</h1>
+        <p class="text-muted mb-0">Manage users, roles, lookup data, and ticket reference tables.</p>
+    </div>
+</div>
+
+<div class="row g-3">
+    <div class="col-sm-6 col-xl-3">
+        <a class="metric-card admin-link" asp-action="Users">
+            <span class="text-muted small">Users</span>
+            <span class="metric-value">@Model.Users</span>
+        </a>
+    </div>
+    <div class="col-sm-6 col-xl-3">
+        <a class="metric-card admin-link" asp-action="Roles">
+            <span class="text-muted small">Roles</span>
+            <span class="metric-value">@Model.Roles</span>
+        </a>
+    </div>
+    <div class="col-sm-6 col-xl-3">
+        <a class="metric-card admin-link" asp-action="Departments">
+            <span class="text-muted small">Departments</span>
+            <span class="metric-value">@Model.Departments</span>
+        </a>
+    </div>
+    <div class="col-sm-6 col-xl-3">
+        <a class="metric-card admin-link" asp-action="Teams">
+            <span class="text-muted small">Teams</span>
+            <span class="metric-value">@Model.Teams</span>
+        </a>
+    </div>
+    <div class="col-sm-6 col-xl-3">
+        <a class="metric-card admin-link" asp-action="Categories">
+            <span class="text-muted small">Categories</span>
+            <span class="metric-value">@Model.Categories</span>
+        </a>
+    </div>
+    <div class="col-sm-6 col-xl-3">
+        <a class="metric-card admin-link" asp-action="Priorities">
+            <span class="text-muted small">Priorities</span>
+            <span class="metric-value">@Model.Priorities</span>
+        </a>
+    </div>
+    <div class="col-sm-6 col-xl-3">
+        <a class="metric-card admin-link" asp-action="Statuses">
+            <span class="text-muted small">Statuses</span>
+            <span class="metric-value">@Model.Statuses</span>
+        </a>
+    </div>
+    <div class="col-sm-6 col-xl-3">
+        <a class="metric-card admin-link" asp-controller="Tickets" asp-action="Index">
+            <span class="text-muted small">Tickets</span>
+            <span class="metric-value">@Model.Tickets</span>
+        </a>
+    </div>
+</div>

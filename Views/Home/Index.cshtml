@@ -1,0 +1,36 @@
+@{
+    ViewData["Title"] = "Welcome";
+}
+
+<div class="home-panel">
+    <div class="home-panel-content">
+        <p class="text-uppercase small fw-semibold text-primary mb-2">Internal support</p>
+        <h1 class="display-5 fw-semibold">Ticket Management System</h1>
+        <p class="lead text-muted">Create, assign, track, resolve, and close employee support tickets with full history and in-app notifications.</p>
+        <div class="d-flex flex-wrap gap-2">
+            <a class="btn btn-primary btn-lg" asp-area="Identity" asp-page="/Account/Login">Login</a>
+            <a class="btn btn-outline-secondary btn-lg" asp-area="Identity" asp-page="/Account/Register">Register</a>
+        </div>
+    </div>
+</div>
+
+<div class="row g-3 mt-4">
+    <div class="col-md-4">
+        <div class="feature-tile">
+            <h2>Employees</h2>
+            <p>Create tickets with category, department, team, priority, description, and attachments.</p>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="feature-tile">
+            <h2>Support</h2>
+            <p>Assign work, add remarks, upload files, change status, and record resolutions.</p>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="feature-tile">
+            <h2>Admins</h2>
+            <p>Manage roles, users, departments, teams, categories, priorities, and statuses.</p>
+        </div>
+    </div>
+</div>

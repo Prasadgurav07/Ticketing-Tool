@@ -1,0 +1,74 @@
+@model CreateTicketViewModel
+
+@{
+    ViewData["Title"] = "Create Ticket";
+}
+
+<div class="page-title">
+    <div>
+        <h1 class="h3 mb-1">Create Ticket</h1>
+        <p class="text-muted mb-0">Submit a support request with enough detail for the team to act quickly.</p>
+    </div>
+</div>
+
+<div class="content-panel">
+    <form asp-action="Create" method="post" enctype="multipart/form-data" class="row g-3">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+        <div class="col-md-6 col-xl-3">
+            <label asp-for="CategoryId" class="form-label"></label>
+            <select asp-for="CategoryId" asp-items="Model.Categories" class="form-select">
+                <option value="">Select category</option>
+            </select>
+            <span asp-validation-for="CategoryId" class="text-danger"></span>
+        </div>
+        <div class="col-md-6 col-xl-3">
+            <label asp-for="DepartmentId" class="form-label"></label>
+            <select asp-for="DepartmentId" asp-items="Model.Departments" class="form-select">
+                <option value="">Select department</option>
+            </select>
+            <span asp-validation-for="DepartmentId" class="text-danger"></span>
+        </div>
+        <div class="col-md-6 col-xl-3">
+            <label asp-for="TeamId" class="form-label"></label>
+            <select asp-for="TeamId" asp-items="Model.Teams" class="form-select">
+                <option value="">Route by department</option>
+            </select>
+            <span asp-validation-for="TeamId" class="text-danger"></span>
+        </div>
+        <div class="col-md-6 col-xl-3">
+            <label asp-for="PriorityId" class="form-label"></label>
+            <select asp-for="PriorityId" asp-items="Model.Priorities" class="form-select">
+                <option value="">Select priority</option>
+            </select>
+            <span asp-validation-for="PriorityId" class="text-danger"></span>
+        </div>
+
+        <div class="col-12">
+            <label asp-for="Subject" class="form-label"></label>
+            <input asp-for="Subject" class="form-control" placeholder="Unable to access payroll application" />
+            <span asp-validation-for="Subject" class="text-danger"></span>
+        </div>
+
+        <div class="col-12">
+            <label asp-for="Description" class="form-label"></label>
+            <textarea asp-for="Description" class="form-control" rows="7"></textarea>
+            <span asp-validation-for="Description" class="text-danger"></span>
+        </div>
+
+        <div class="col-12">
+            <label asp-for="Attachments" class="form-label">Supporting files</label>
+            <input asp-for="Attachments" class="form-control" type="file" multiple />
+            <div class="form-text">Allowed: PNG, JPG, PDF, DOC/DOCX, XLS/XLSX, TXT, LOG. Max 10 MB each.</div>
+        </div>
+
+        <div class="col-12 d-flex gap-2">
+            <button class="btn btn-primary" type="submit">Create Ticket</button>
+            <a class="btn btn-outline-secondary" asp-action="Index">Cancel</a>
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

@@ -15,9 +15,15 @@
 <partial name="_DashboardMetrics" model="Model" />
 
 <div class="content-panel">
-    <div class="d-flex align-items-center justify-content-between mb-3">
-        <h2 class="h5 mb-0">Recent Tickets</h2>
-        <a asp-controller="Tickets" asp-action="Index">View all</a>
+    <div class="row">
+        <div class="p-4">
+    <div class="panel">
+        <div class="panel-heading">
+            <h2 class="h5 mb-0">Recent Tickets</h2>
+            <a asp-controller="Tickets" asp-action="Index">View all</a>
+        </div>
+        <partial name="_TicketTable" model="Model.RecentTickets" />
     </div>
-    <partial name="_TicketTable" model="Model.RecentTickets" />
+    </div>
+    </div>
 </div>

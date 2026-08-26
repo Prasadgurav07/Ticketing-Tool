@@ -2,7 +2,7 @@
 
 @{
     ViewData["Title"] = "Notifications";
-}
+} 
 
 <div class="page-title">
     <div>
@@ -11,25 +11,26 @@
     </div>
 </div>
 
-<div class="content-panel">
-    <div class="list-group">
-        @foreach (var notification in Model)
-        {
-            <form asp-action="Read" method="post" class="list-group-item list-group-item-action @(notification.IsRead ? "" : "list-group-item-primary")">
-                <input type="hidden" name="id" value="@notification.NotificationId" />
-                <button class="btn btn-link text-start p-0 text-decoration-none w-100" type="submit">
-                    <div class="d-flex justify-content-between gap-3">
-                        <strong>@notification.Title</strong>
-                        <span class="small text-muted">@notification.CreatedAt.ToLocalTime().ToString("dd MMM yyyy HH:mm")</span>
-                    </div>
-                    <span class="d-block text-muted">@notification.Message</span>
-                    <span class="small">@notification.NotificationType</span>
-                </button>
-            </form>
-        }
-        @if (!Model.Any())
-        {
-            <div class="text-muted py-4 text-center">No notifications yet.</div>
-        }
+    <div class="panel">
+        <div class="list-group">
+            @foreach (var notification in Model)
+            {
+                <form asp-action="Read" method="post" class="list-group-item list-group-item-action @(notification.IsRead ? "" : "is-unread")">
+                    <input type="hidden" name="id" value="@notification.NotificationId" />
+                    <button class="btn btn-link text-start p-0 text-decoration-none w-100" type="submit">
+                        <div class="d-flex justify-content-between gap-3">
+                            <strong>@notification.Title</strong>
+                            <span class="small text-muted">@notification.CreatedAt.ToLocalTime().ToString("dd MMM yyyy HH:mm")</span>
+                        </div>
+                        <span class="d-block text-muted">@notification.Message</span>
+                        <span class="small">@notification.NotificationType</span>
+                    </button>
+                </form>
+            }
+            @if (!Model.Any())
+            {
+                <div class="text-muted py-4 text-center">No notifications yet.</div>
+            }
+        </div>
     </div>
-</div>
+

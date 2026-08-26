@@ -12,8 +12,14 @@
     <a class="btn btn-primary" asp-action="Create">Create Ticket</a>
 </div>
 
-<div class="content-panel mb-3">
-    <form method="get" class="row g-3 align-items-end">
+<div class="content-panel">
+    <div class="row">
+        <div class="p-4">
+    <form method="get" class="row g-3 align-items-end td-filter-form">
+        <div class="col-12">
+            <p class="td-eyebrow">Filters</p>
+        </div>
+
         <div class="col-md-6 col-xl-3">
             <label asp-for="Search" class="form-label"></label>
             <input asp-for="Search" class="form-control" placeholder="Ticket number or subject" />
@@ -70,8 +76,17 @@
             <a class="btn btn-outline-secondary" asp-action="Index">Reset</a>
         </div>
     </form>
+    </div>
+    </div>
+
 </div>
 
-<div class="content-panel">
-    <partial name="_TicketTable" model="Model.Tickets" />
+<div class="content-panel" style="padding: 10px;>
+    <div class="row">
+        <div class="p-4">
+             <div class="panel">
+                 <partial name="_TicketTable" model="Model.Tickets" />
+            </div>
+        </div>
+    </div>
 </div>

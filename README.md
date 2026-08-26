@@ -59,7 +59,10 @@ The seed routine creates:
 Development admin account from `appsettings.Development.json`:
 
 - Email: `admin@company.local`
-- Password: `ChangeThisDevPassword!2026`
+- Password: `Admim@123`
+
+Mail - prasadgurav2612@gmail.com
+paassword - Amaan@123
 
 Replace this using user secrets or environment variables before sharing beyond local development.
 

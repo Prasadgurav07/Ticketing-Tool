@@ -1,0 +1,870 @@
+/* ==========================================================================
+   TicketDesk — "Helpdesk Studio" theme
+   Load AFTER bootstrap.css, BEFORE site.css (if you have one) so this can
+   override Bootstrap defaults but your own page-specific tweaks still win.
+   ========================================================================== */
+
+/* Fonts: add the <link> tags in _Layout.cshtml <head> (see notes below).
+   Sora = headings, Inter = body/UI text. */
+
+:root {
+    --bg: #f4f6fb;
+    --panel: #ffffff;
+    --border: #e3e8f2;
+    --text: #1c2333;
+    --muted: #6b7488;
+    --primary: #4f46e5;
+    --primary-2: #6d63f0;
+    --primary-dk: #4338ca;
+    --coral: #fb7185; /* used for high/urgent priority pill */
+    --mint: #16a37a; /* used for "done" states           */
+
+    --radius-lg: 16px;
+    --radius-md: 10px;
+    --radius-sm: 8px;
+}
+
+body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Inter', -apple-system, Segoe UI, sans-serif;
+}
+
+/* ---------------------------------------------------------------------- */
+/* Top bar (put this markup once in _Layout.cshtml, not per-page)          */
+/* ---------------------------------------------------------------------- */
+.td-topbar {
+    background: #fff;
+    border-bottom: 1px solid var(--border);
+    padding: 0 32px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 64px;
+}
+
+.td-brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-family: 'Sora',sans-serif;
+    font-weight: 700;
+    font-size: 16px;
+    color: var(--text);
+    text-decoration: none;
+}
+
+    .td-brand .mark {
+        width: 30px;
+        height: 30px;
+        border-radius: 9px;
+        background: linear-gradient(135deg, var(--primary), var(--primary-2));
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #fff;
+        font-size: 13px;
+        font-family: 'Sora',sans-serif;
+    }
+
+.td-topbar nav {
+    display: flex;
+    gap: 26px;
+}
+
+    .td-topbar nav a {
+        color: var(--muted);
+        font-size: 14px;
+        font-weight: 600;
+        text-decoration: none;
+        padding: 22px 0;
+        border-bottom: 2px solid transparent;
+    }
+
+        .td-topbar nav a.active,
+        .td-topbar nav a:hover {
+            color: var(--primary);
+            border-color: var(--primary);
+        }
+
+.td-avatar {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: #e3e8f2;
+}
+
+/* ---------------------------------------------------------------------- */
+/* Page header (used on every page: list, create, edit, details)          */
+/* Supports an optional trailing action button (e.g. "Create Ticket")     */
+/* ---------------------------------------------------------------------- */
+.page-title {
+    max-width: 1120px;
+    margin: 36px auto 22px;
+    padding: 0 32px;
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 16px;
+    flex-wrap: wrap;
+}
+
+    .page-title h1, .page-title .h3 {
+        font-family: 'Sora',sans-serif;
+        font-size: 25px;
+        font-weight: 700;
+        letter-spacing: -.01em;
+        margin: 0 0 6px;
+    }
+
+    .page-title .text-muted {
+        color: var(--muted) !important;
+        font-size: 14.5px;
+    }
+
+    .page-title .btn {
+        flex-shrink: 0;
+    }
+
+/* ---------------------------------------------------------------------- */
+/* Content panel (page-width wrapper) + Panel (the boxed white card)      */
+/* content-panel = layout container, panel = visual card.                 */
+/* A form placed directly in .content-panel is auto-boxed for convenience.*/
+/* For anything else (partials, divs), add class="panel" explicitly.      */
+/* ---------------------------------------------------------------------- */
+.content-panel {
+    max-width: 1120px;
+    margin: 0 auto 28px;
+    /*padding: 0 32px;*/
+}
+
+.content-panel {
+    padding: 10px;
+}
+
+    .content-panel:last-of-type {
+        margin-bottom: 70px;
+    }
+
+    .content-panel > form,
+    .panel {
+        background: var(--panel);
+        border: 1px solid var(--border);
+        border-radius: var(--radius-lg);
+        padding: 30px 32px;
+        box-shadow: 0 1px 2px rgba(20,25,45,.04), 0 8px 24px -12px rgba(20,25,45,.08);
+    }
+
+/* Small uppercase eyebrow label above a form/section (no numbering) */
+.td-eyebrow {
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: .05em;
+    color: var(--primary);
+    margin: 0 0 16px;
+}
+
+/* Panel-level section heading, e.g. "Recent Tickets" + "View all" row */
+.panel-heading {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 18px;
+}
+
+    .panel-heading h2, .panel-heading .h5 {
+        font-family: 'Sora',sans-serif;
+        font-size: 16px;
+        font-weight: 700;
+        margin: 0;
+        color: var(--text);
+    }
+
+    .panel-heading a {
+        font-size: 13.5px;
+        font-weight: 600;
+        color: var(--primary);
+        text-decoration: none;
+    }
+
+        .panel-heading a:hover {
+            text-decoration: underline;
+        }
+
+/* ---------------------------------------------------------------------- */
+/* Section labels — grouping fields with numbered eyebrows                 */
+/* Wrap each group in <div class="td-section"> ... </div>                  */
+/* Numbers auto-increment, so you can add/remove sections freely.          */
+/* ---------------------------------------------------------------------- */
+.content-panel > form {
+    counter-reset: td-section;
+}
+
+.td-section {
+    counter-increment: td-section;
+}
+
+.td-section-label {
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: .05em;
+    color: var(--primary);
+    margin: 0 0 14px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+    .td-section-label::before {
+        content: counter(td-section) ".";
+    }
+
+.td-section:not(:first-child) .td-section-label {
+    margin-top: 30px;
+    padding-top: 26px;
+    border-top: 1px solid var(--border);
+}
+
+/* ---------------------------------------------------------------------- */
+/* Optional lifecycle stepper (Create page only)                           */
+/* ---------------------------------------------------------------------- */
+.td-stepper {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 26px;
+}
+
+.td-step {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 12.5px;
+    font-weight: 600;
+    color: var(--muted);
+}
+
+    .td-step .n {
+        width: 20px;
+        height: 20px;
+        border-radius: 50%;
+        background: #eef0f7;
+        color: var(--muted);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 11px;
+    }
+
+    .td-step.current {
+        color: var(--primary);
+    }
+
+        .td-step.current .n {
+            background: var(--primary);
+            color: #fff;
+        }
+
+    .td-step.done .n {
+        background: var(--mint);
+        color: #fff;
+    }
+
+.td-steplink {
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+    max-width: 46px;
+}
+
+/* ---------------------------------------------------------------------- */
+/* Form controls — reskin Bootstrap, keep Bootstrap's grid/classes as-is   */
+/* ---------------------------------------------------------------------- */
+.form-label {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text);
+    margin-bottom: 7px;
+}
+
+.form-select, .form-control {
+    background: #fbfcfe;
+    border: 1.5px solid var(--border);
+    color: var(--text);
+    border-radius: var(--radius-md);
+    padding: 10px 13px;
+    font-size: 14px;
+    font-family: 'Inter',sans-serif;
+}
+
+    .form-select:focus, .form-control:focus {
+        border-color: var(--primary);
+        box-shadow: 0 0 0 4px rgba(79,70,229,.10);
+    }
+
+textarea.form-control {
+    min-height: 150px;
+    line-height: 1.6;
+}
+
+/* Priority pill next to its label — add manually via JS/partial if you
+   want it to reflect the selected value, or leave static per below. */
+.td-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: #fff1f2;
+    color: #e11d48;
+    font-size: 11.5px;
+    font-weight: 700;
+    padding: 4px 10px;
+    border-radius: 100px;
+    margin-left: 8px;
+}
+
+    .td-pill .dt {
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+        background: #e11d48;
+    }
+
+/* File input styled as a drop-zone shell (native input kept inside) */
+.td-filedrop {
+    border: 1.5px dashed #c9cfe0;
+    border-radius: 12px;
+    padding: 20px 24px;
+    background: #fbfcfe;
+    text-align: center;
+}
+
+    .td-filedrop .td-file-icon {
+        width: 38px;
+        height: 38px;
+        border-radius: 10px;
+        background: #eef0ff;
+        color: var(--primary);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 10px;
+        font-size: 16px;
+    }
+
+    .td-filedrop .td-file-title {
+        font-size: 13.5px;
+        font-weight: 600;
+        color: var(--text);
+        margin-bottom: 8px;
+    }
+
+    .td-filedrop input[type=file] {
+        border: none;
+        background: transparent;
+        padding: 0;
+        font-size: 12.5px;
+        color: var(--muted);
+        max-width: 340px;
+        margin: 0 auto;
+    }
+
+    .td-filedrop .form-text {
+        font-size: 12px;
+        color: var(--muted);
+        margin-top: 8px;
+    }
+
+/* ---------------------------------------------------------------------- */
+/* Buttons                                                                  */
+/* ---------------------------------------------------------------------- */
+.btn {
+    font-weight: 700;
+    font-size: 14px;
+    padding: 12px 22px;
+    border-radius: var(--radius-md);
+}
+
+.btn-primary {
+    background: var(--primary);
+    border-color: var(--primary);
+    color: #fff;
+    box-shadow: 0 8px 20px -8px rgba(79,70,229,.6);
+}
+
+    .btn-primary:hover {
+        background: var(--primary-dk);
+        border-color: var(--primary-dk);
+    }
+
+.btn-outline-secondary {
+    border-color: var(--border);
+    color: var(--muted);
+    background: #fff;
+}
+
+    .btn-outline-secondary:hover {
+        border-color: #b9c0d4;
+        color: var(--text);
+        background: #fff;
+    }
+
+/* Validation messages */
+.text-danger {
+    font-size: 12.5px;
+    margin-top: 6px;
+    display: block;
+}
+
+@media (max-width: 900px) {
+    .td-topbar nav {
+        display: none;
+    }
+}
+
+/* ==========================================================================
+   SITE-WIDE LAYOUT (_Layout.cshtml) — navbar, dropdown, alerts, footer
+   These override the real Bootstrap navbar/dropdown/alert classes already
+   in use, so no markup structure changes are required — only add classes
+   where noted in the _Layout.cshtml snippet below.
+   ========================================================================== */
+
+/* ---- Navbar ------------------------------------------------------------ */
+.app-nav {
+    padding: 0 32px;
+    min-height: 64px;
+    box-shadow: none;
+}
+
+    .app-nav .navbar-brand {
+        font-family: 'Sora',sans-serif;
+        font-weight: 700;
+        font-size: 16px;
+        color: var(--text) !important;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+        .app-nav .navbar-brand::before {
+            content: 'T';
+            width: 30px;
+            height: 30px;
+            border-radius: 9px;
+            background: linear-gradient(135deg, var(--primary), var(--primary-2));
+            color: #fff;
+            font-size: 13px;
+            font-family: 'Sora',sans-serif;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+    .app-nav .nav-link {
+        color: var(--muted) !important;
+        font-size: 14px;
+        font-weight: 600;
+        padding: 22px 14px !important;
+        border-bottom: 2px solid transparent;
+        transition: color .15s, border-color .15s;
+    }
+
+        .app-nav .nav-link:hover,
+        .app-nav .nav-link.active {
+            color: var(--primary) !important;
+            border-color: var(--primary);
+        }
+
+    .app-nav .dropdown-menu {
+        border: 1px solid var(--border);
+        border-radius: var(--radius-md);
+        box-shadow: 0 8px 24px -12px rgba(20,25,45,.18);
+        padding: 6px;
+        margin-top: 8px !important;
+    }
+
+    .app-nav .dropdown-item {
+        border-radius: 6px;
+        font-size: 14px;
+        padding: 8px 12px;
+        color: var(--text);
+    }
+
+        .app-nav .dropdown-item:hover,
+        .app-nav .dropdown-item:focus {
+            background: #f1f0fe;
+            color: var(--primary);
+        }
+
+    .app-nav .dropdown-divider {
+        border-color: var(--border);
+        margin: 6px 0;
+    }
+
+    .app-nav .navbar-toggler {
+        border-color: var(--border);
+    }
+
+        .app-nav .navbar-toggler:focus {
+            box-shadow: 0 0 0 4px rgba(79,70,229,.15);
+        }
+
+/* ---- Page shell ---------------------------------------------------------- */
+.app-shell {
+    padding-left: 32px;
+    padding-right: 32px;
+}
+
+/* ---- Alerts -------------------------------------------------------------- */
+.alert {
+    border: none;
+    border-radius: var(--radius-md);
+    font-size: 14px;
+    padding: 14px 18px;
+    max-width: 980px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.alert-success {
+    background: #ecfbf5;
+    color: #0f7a58;
+}
+
+.alert-danger {
+    background: #fff1f2;
+    color: #c81e3a;
+}
+
+.alert .btn-close {
+    box-shadow: none;
+}
+
+/* ---- Footer ---------------------------------------------------------------- */
+.footer {
+    background: #fff;
+    border-color: var(--border) !important;
+    padding: 16px 32px;
+    font-size: 12.5px;
+    color: var(--muted) !important;
+}
+
+/* ==========================================================================
+   FILTER FORMS (Tickets Index and similar search/filter bars)
+   ========================================================================== */
+.td-filter-form .form-label {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--muted);
+    margin-bottom: 6px;
+}
+
+.td-filter-form .form-control,
+.td-filter-form .form-select {
+    padding: 9px 12px;
+    font-size: 13.5px;
+}
+
+/* ==========================================================================
+   TABLES (_TicketTable and similar list partials)
+   Assumes standard Bootstrap `table` markup with optional `badge bg-*`
+   cells for status/priority. Adjust selectors if your partial differs.
+   ========================================================================== */
+.panel table,
+.content-panel table {
+    margin-bottom: 0;
+    width: 100%;
+}
+
+.table thead th {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: .05em;
+    color: var(--muted);
+    font-weight: 700;
+    border-bottom: 1px solid var(--border);
+    padding: 10px 14px;
+    background: transparent;
+}
+
+.table tbody td {
+    padding: 15px 14px;
+    font-size: 14px;
+    color: var(--text);
+    vertical-align: middle;
+    border-bottom: 1px solid var(--border);
+}
+
+.table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+.table tbody tr:hover {
+    background: #f9fafd;
+}
+
+.table a {
+    color: var(--primary);
+    font-weight: 600;
+    text-decoration: none;
+}
+
+    .table a:hover {
+        text-decoration: underline;
+    }
+
+.table td .text-muted {
+    color: var(--muted) !important;
+    font-size: 12.5px;
+}
+
+/* Status / priority chips — overrides Bootstrap's bg-* badge utilities */
+.badge {
+    font-weight: 600;
+    font-size: 11px;
+    letter-spacing: .02em;
+    padding: 5px 10px;
+    border-radius: 100px;
+}
+
+    .badge.bg-primary {
+        background: #eef0ff !important;
+        color: var(--primary) !important;
+    }
+
+    .badge.bg-success {
+        background: #ecfbf5 !important;
+        color: #0f7a58 !important;
+    }
+
+    .badge.bg-danger {
+        background: #fff1f2 !important;
+        color: #c81e3a !important;
+    }
+
+    .badge.bg-warning {
+        background: #fff8e8 !important;
+        color: #a9791f !important;
+    }
+
+    .badge.bg-info {
+        background: #eaf6fb !important;
+        color: #0f7a9c !important;
+    }
+
+    .badge.bg-secondary,
+    .badge.bg-light {
+        background: #f1f2f6 !important;
+        color: var(--muted) !important;
+    }
+
+/* Empty state (no rows) */
+.td-empty {
+    text-align: center;
+    padding: 48px 20px;
+    color: var(--muted);
+}
+
+    .td-empty .td-empty-title {
+        font-size: 14.5px;
+        font-weight: 600;
+        color: var(--text);
+        margin-bottom: 4px;
+    }
+
+    .td-empty .td-empty-sub {
+        font-size: 13px;
+    }
+
+.table .text-muted.py-4 {
+    font-size: 13.5px;
+}
+
+/* Status / priority chips — matches _TicketTable's actual markup:
+   <span class="priority-badge priority-{slug}">  /  <span class="status-badge status-{slug}">
+   Slug = lowercased, spaces replaced with hyphens (see Slug() in the partial).
+   Unmatched slugs fall back to the neutral base style below. */
+.priority-badge, .status-badge {
+    display: inline-block;
+    font-weight: 600;
+    font-size: 11px;
+    letter-spacing: .02em;
+    padding: 5px 10px;
+    border-radius: 100px;
+    background: #f1f2f6;
+    color: var(--muted); /* fallback */
+    white-space: nowrap;
+}
+
+    .priority-badge.priority-low {
+        background: #ecfbf5;
+        color: #0f7a58;
+    }
+
+    .priority-badge.priority-medium {
+        background: #fff8e8;
+        color: #a9791f;
+    }
+
+    .priority-badge.priority-high {
+        background: #fff1f2;
+        color: #c81e3a;
+    }
+
+    .priority-badge.priority-critical,
+    .priority-badge.priority-urgent {
+        background: #c81e3a;
+        color: #fff;
+    }
+
+    .status-badge.status-open {
+        background: #eef0ff;
+        color: var(--primary);
+    }
+
+    .status-badge.status-in-progress {
+        background: #fff8e8;
+        color: #a9791f;
+    }
+
+    .status-badge.status-pending-user {
+        background: #f1f2f6;
+        color: var(--muted);
+    }
+
+    .status-badge.status-assigned {
+        background: #eaf6fb;
+        color: #0f7a9c;
+    }
+
+    .status-badge.status-resolved {
+        background: #ecfbf5;
+        color: #0f7a58;
+    }
+
+    .status-badge.status-closed {
+        background: #e9eaee;
+        color: #4b5163;
+    }
+
+/* Pagination, if _TicketTable renders one */
+.pagination .page-link {
+    border: 1px solid var(--border);
+    color: var(--muted);
+    font-size: 13px;
+    font-weight: 600;
+    margin: 0 2px;
+    border-radius: 8px !important;
+}
+
+.pagination .page-item.active .page-link {
+    background: var(--primary);
+    border-color: var(--primary);
+    color: #fff;
+}
+
+.pagination .page-link:hover {
+    background: #f1f0fe;
+    color: var(--primary);
+}
+
+/* ==========================================================================
+   DASHBOARD METRICS (_DashboardMetrics) — matches actual markup:
+   <div class="metric-card"><div class="text-muted small">Label</div>
+   <div class="metric-value">123</div></div>, laid out in Bootstrap's row/col.
+   ========================================================================== */
+.metric-card {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 20px 22px;
+    box-shadow: 0 1px 2px rgba(20,25,45,.04);
+    height: 100%;
+}
+
+    .metric-card .text-muted.small {
+        font-size: 11.5px;
+        text-transform: uppercase;
+        letter-spacing: .05em;
+        color: var(--muted) !important;
+        font-weight: 700;
+        margin-bottom: 8px;
+    }
+
+.metric-value {
+    font-family: 'Sora',sans-serif;
+    font-size: 26px;
+    font-weight: 700;
+    color: var(--text);
+}
+
+/* ==========================================================================
+   NOTIFICATIONS (list-group) — used standalone on Notifications/Index and
+   as a compact "flush" panel on the Dashboard.
+   ========================================================================== */
+.list-group-item {
+    border-color: var(--border);
+    padding: 14px 16px;
+    transition: background .15s;
+}
+
+    .list-group-item:first-child {
+        border-top-left-radius: var(--radius-md);
+        border-top-right-radius: var(--radius-md);
+    }
+
+    .list-group-item:last-child {
+        border-bottom-left-radius: var(--radius-md);
+        border-bottom-right-radius: var(--radius-md);
+    }
+
+.list-group-item-action:hover {
+    background: #f9fafd;
+}
+
+/* Unread state — replaces Bootstrap's .list-group-item-primary flat fill */
+.list-group-item.is-unread {
+    background: #f5f5ff;
+    border-left: 3px solid var(--primary);
+    padding-left: 13px;
+}
+
+.list-group-item .btn-link {
+    color: inherit;
+}
+
+    .list-group-item .btn-link strong {
+        font-size: 14px;
+        color: var(--text);
+        font-weight: 600;
+    }
+
+    .list-group-item .btn-link .text-muted {
+        color: var(--muted) !important;
+    }
+
+    .list-group-item .btn-link .small {
+        font-size: 12px;
+    }
+
+/* Flush variant — inside a .panel on the Dashboard, no outer border/radius
+   per item, just hairline dividers */
+.list-group-flush {
+    margin: -6px 0 0;
+}
+
+    .list-group-flush > .list-group-item {
+        border-width: 0 0 1px 0;
+        border-radius: 0 !important;
+        padding: 14px 4px;
+    }
+
+        .list-group-flush > .list-group-item.is-unread {
+            padding-left: 13px;
+        }
+
+        .list-group-flush > .list-group-item:last-child {
+            border-bottom: none;
+        }

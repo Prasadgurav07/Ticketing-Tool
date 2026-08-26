@@ -39,8 +39,14 @@
                     @Html.DropDownList("roleName", new Microsoft.AspNetCore.Mvc.Rendering.SelectList(user.AvailableRoles, "Value", "Text", currentRole), "No role", new { @class = "form-select" })
                 </div>
                 <label class="form-check mt-4">
+                    <input name="IsActive"
+                           value="true"
+                           class="form-check-input"
+                           type="checkbox"
+                    @(user.IsActive ? "checked" : "") />
+
                     <input type="hidden" name="IsActive" value="false" />
-                    <input name="IsActive" value="true" class="form-check-input" type="checkbox" checked="@user.IsActive" />
+
                     <span class="form-check-label">Active</span>
                 </label>
                 <div class="mt-4">

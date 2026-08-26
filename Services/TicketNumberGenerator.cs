@@ -7,13 +7,13 @@ public class TicketNumberGenerator(ApplicationDbContext context) : ITicketNumber
 {
     public async Task<string> GenerateAsync(CancellationToken cancellationToken = default)
     {
-        var prefix = $"INC-{DateTime.UtcNow.Year}-";
+        var prefix = $"GSC-{DateTime.UtcNow.Year}-";
         var nextNumber = await context.Tickets
             .CountAsync(ticket => ticket.TicketNumber.StartsWith(prefix), cancellationToken) + 1;
 
         for (var attempt = 0; attempt < 20; attempt++)
         {
-            var candidate = $"{prefix}{nextNumber + attempt:000000}";
+            var candidate = $"{prefix}{nextNumber + attempt:0000}";
             if (!await context.Tickets.AnyAsync(ticket => ticket.TicketNumber == candidate, cancellationToken))
             {
                 return candidate;

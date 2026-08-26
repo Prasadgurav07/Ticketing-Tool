@@ -12,8 +12,8 @@ using Ticketing_Tool.Data;
 namespace Ticketing_Tool.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20260820112837_UpdateApplicationDbContext")]
-    partial class UpdateApplicationDbContext
+    [Migration("20260826102748_Migration1")]
+    partial class Migration1
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
